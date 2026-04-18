@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="glass">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Dev — AI Assistant</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/style.css"/>
+</head>
+<body>
+
+  <!-- Animated background -->
+  <div class="bg-canvas">
+    <div class="bg-orb orb-1"></div>
+    <div class="bg-orb orb-2"></div>
+    <div class="bg-orb orb-3"></div>
+    <div class="bg-grid"></div>
+  </div>
+
+  <!-- ── Sidebar ── -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-inner">
+
+      <!-- Logo -->
+      <div class="sidebar-header">
+        <div class="logo">
+          <div class="logo-mark">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+            </svg>
+          </div>
+          <div class="logo-text-wrap">
+            <span class="logo-name">Dev</span>
+            <span class="logo-sub">AI Assistant</span>
+          </div>
+        </div>
+        <button class="sidebar-close" id="sidebarClose">✕</button>
+      </div>
+
+      <!-- New Chat -->
+      <div class="new-chat-wrap">
+        <button class="new-chat-btn" id="newChatBtn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+          </svg>
+          New Chat
+        </button>
+      </div>
+
+      <!-- Chat History -->
+      <div class="history-section">
+        <p class="section-label">Recent Chats</p>
+        <div class="chat-history-list" id="chatHistoryList">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+
+      <!-- Quick Commands -->
+      <div class="commands-section">
+        <p class="section-label">Quick Open</p>
+        <div class="cmd-grid">
+          <button class="cmd-btn" data-cmd="open youtube">
+            <span class="cmd-icon">▶</span> YouTube
+          </button>
+          <button class="cmd-btn" data-cmd="open github">
+            <span class="cmd-icon">◈</span> GitHub
+          </button>
+          <button class="cmd-btn" data-cmd="open gmail">
+            <span class="cmd-icon">✉</span> Gmail
+          </button>
+          <button class="cmd-btn" data-cmd="open maps">
+            <span class="cmd-icon">◎</span> Maps
+          </button>
+          <button class="cmd-btn" data-cmd="open reddit">
+            <span class="cmd-icon">↑</span> Reddit
+          </button>
+          <button class="cmd-btn" data-cmd="/time">
+            <span class="cmd-icon">◷</span> Time
+          </button>
+        </div>
+      </div>
+
+      <!-- Sidebar footer -->
+      <div class="sidebar-footer">
+        <!-- Theme Switcher -->
+        <div class="theme-switcher">
+          <p class="section-label">Theme</p>
+          <div class="theme-pills">
+            <button class="theme-pill active" data-theme="glass" title="Glassmorphism">
+              <span class="pill-dot" style="background:rgba(255,255,255,0.3)"></span> Glass
+            </button>
+            <button class="theme-pill" data-theme="dark" title="Deep Dark">
+              <span class="pill-dot" style="background:#1a1a2e"></span> Dark
+            </button>
+            <button class="theme-pill" data-theme="neon" title="Neon Cyber">
+              <span class="pill-dot" style="background:#00ff88"></span> Neon
+            </button>
+          </div>
+        </div>
+
+        <div class="footer-actions">
+          <button class="footer-btn" id="exportBtn" title="Export Chat">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>
+            </svg>
+            Export
+          </button>
+          <button class="footer-btn danger" id="clearBtn" title="Clear Chat">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14">
+              <polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/>
+            </svg>
+            Clear
+          </button>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Sidebar overlay (mobile) -->
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+  <!-- ── Main Area ── -->
+  <main class="main">
+
+    <!-- Topbar -->
+    <header class="topbar">
+      <button class="menu-toggle" id="menuToggle" aria-label="Toggle sidebar">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20">
+          <line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/>
+        </svg>
+      </button>
+
+      <div class="topbar-center">
+        <div class="model-badge">
+          <span class="status-dot"></span>
+          <span class="model-name">GPT-4o-mini</span>
+          <span class="model-sep">·</span>
+          <span class="model-status">Ready</span>
+        </div>
+      </div>
+
+      <div class="topbar-actions">
+        <div class="token-badge" id="tokenBadge">0 msgs</div>
+        <button class="icon-btn" id="voiceToggle" title="Voice Input" aria-label="Voice input">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16">
+            <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
+            <path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/>
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <!-- Chat window -->
+    <div class="chat-window" id="chatWindow">
+      <div class="welcome-card" id="welcomeCard">
+        <div class="welcome-glow"></div>
+        <div class="welcome-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="32" height="32">
+            <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+          </svg>
+        </div>
+        <h1>Hello, I'm <em>Dev</em></h1>
+        <p>Your intelligent AI assistant. Ask anything, open apps, search the web, or just talk.</p>
+        <div class="quick-prompts">
+          <button class="qp" data-text="What can you do?">What can you do?</button>
+          <button class="qp" data-text="Explain async/await in Python">Async/await in Python</button>
+          <button class="qp" data-text="Write me a haiku about code">Write a haiku</button>
+          <button class="qp" data-text="open youtube">Open YouTube</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Input bar -->
+    <div class="input-area">
+      <div class="input-wrapper" id="inputWrapper">
+        <div class="input-left">
+          <button class="input-icon-btn" id="voiceBtnInline" title="Voice Input">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16">
+              <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
+              <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+            </svg>
+          </button>
+        </div>
+        <textarea
+          id="msgInput"
+          placeholder="Message Dev…"
+          rows="1"
+          autocomplete="off"
+          spellcheck="true"
+        ></textarea>
+        <button id="sendBtn" class="send-btn" aria-label="Send">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="16" height="16">
+            <line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/>
+          </svg>
+        </button>
+      </div>
+      <p class="input-hint">↵ send  ·  ⇧↵ newline  ·  🎤 voice</p>
+    </div>
+
+  </main>
+
+  <!-- Voice listening overlay -->
+  <div class="voice-overlay" id="voiceOverlay">
+    <div class="voice-modal">
+      <div class="voice-rings">
+        <div class="ring r1"></div>
+        <div class="ring r2"></div>
+        <div class="ring r3"></div>
+        <div class="voice-mic">🎤</div>
+      </div>
+      <p class="voice-label">Listening…</p>
+      <button class="voice-stop" id="voiceStop">Stop</button>
+    </div>
+  </div>
+
+  <!-- Toast notifications -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <script src="/static/app.js"></script>
+</body>
+</html>
